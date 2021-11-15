@@ -25,9 +25,10 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log(getDiagramSource());
 	const full_path = getDiagramSource();
 
-	const target_file = path.join(context.extensionPath, "media", "out", `test.png`);
-	const withDiagramFilePath = path.join(context.extensionPath, "media", "out", `test`);
-	const target_src_file = path.join(context.extensionPath, "media", "out", `test.py`);
+	const outDirectory = path.join(context.extensionPath, "media", "out");
+	const target_file = path.join(outDirectory, `test.png`);
+	const target_src_file = path.join(outDirectory, `test.py`);
+	const withDiagramFilePath = path.join(outDirectory, `test`);
 
 	const getContent = () => {
 		var data = fs.readFileSync(target_file).toString('base64');
@@ -101,12 +102,18 @@ export function activate(context: vscode.ExtensionContext) {
 		finalSrc = `${finalSrc}${wholeText}`;
 
 		// write to file
-		fs.writeFile(target_src_file, finalSrc, err => {
-			if (err)
-				console.log(err);
-			else
-				generateDiagram(panel);
-		});	
+		fs.mkdir(outDirectory, { recursive: true }, (err) => {
+			if (err) throw err;
+
+
+			fs.writeFile(target_src_file, finalSrc, err => {
+				if (err)
+					console.log(err);
+				else
+					generateDiagram(panel);
+			});	
+		});
+
 	}
 
 	const commandHandler = () => {
