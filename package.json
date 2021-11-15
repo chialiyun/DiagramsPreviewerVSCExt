@@ -1,23 +1,32 @@
 {
-  "name": "diagramasacodepreview",
-	"displayName": "DiagramAsACodePreview",
+  "name": "diagramspreviewer",
+	"displayName": "Diagrams Previewer",
 	"description": "Translate the code into diagrams",
 	"version": "0.0.1",
+	"publisher": "tehpeng",
+	"author": {
+		"name": "Chia Li Yun"
+	},
+	"repository": {
+		"url": "https://github.com/chialiyun/DiagramAsCodePreviewVSCExt.git",
+		"type": "git"
+	},
 	"engines": {
 		"vscode": "^1.62.0"
 	},
 	"categories": [
+		"Programming Languages",
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:diagramasacodepreview.start"
+        "onCommand:diagramspreviewer.start"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "diagramasacodepreview.start",
-				"title": "Start Preview Diagram as a Code"
+				"command": "diagramspreviewer.start",
+				"title": "Preview Diagrams"
 			}
 		]
 	},

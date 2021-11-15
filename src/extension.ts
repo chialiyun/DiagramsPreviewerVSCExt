@@ -7,23 +7,7 @@ import * as fs from 'fs'
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-	
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "helloworld" is now active!');
-	console.log(context.extensionPath);
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const command = 'diagramasacodepreview.start';
-
-	const getDiagramSource = () => vscode.window.activeTextEditor?.document.uri.path ?? "";
-
-	const fileName = vscode.window.activeTextEditor?.document?.fileName;
-	console.log(fileName);
-	console.log(getDiagramSource());
-	const full_path = getDiagramSource();
+	const command = 'diagramspreviewer.start';
 
 	const outDirectory = path.join(context.extensionPath, "media", "out");
 	const target_file = path.join(outDirectory, `test.png`);
@@ -117,7 +101,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	const commandHandler = () => {
-		vscode.window.showInformationMessage('Hello World from HelloWorld!');
+		vscode.window.showInformationMessage('Generating diagram preview...');
 
 		// TODO: check if python is installed, check if the graphviz is installed
 
@@ -131,7 +115,7 @@ export function activate(context: vscode.ExtensionContext) {
 		);
 
 		vscode.workspace.onDidSaveTextDocument((e) => {
-			console.log("New changes saved, lets reload!");
+			vscode.window.showInformationMessage('Reflecting new changes to diagram preview...');
 
 			updateTempSourceFile(panel);
 		});
