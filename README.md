@@ -19,3 +19,4 @@ Make sure you have installed the following:
     - `choco install graphviz` for Windows
 
 ## Demonstration
+![Demonstration](/demo/preview.gif)
