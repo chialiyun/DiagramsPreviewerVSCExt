@@ -22,4 +22,4 @@ Make sure you have installed the following before activating the extension:
     - `choco install graphviz` for Windows
 
 ## Demonstration
-![Demonstration](/demo/preview.gif)
+![Demonstration](/resources/preview.gif)
