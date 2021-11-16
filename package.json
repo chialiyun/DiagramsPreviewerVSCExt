@@ -18,6 +18,7 @@
 		"Programming Languages",
 		"Other"
 	],
+	"icon": "resources/icon.png",
 	"activationEvents": [
         "onCommand:diagramspreviewer.start"
 	],
