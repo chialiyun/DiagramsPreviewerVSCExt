@@ -23,3 +23,8 @@ Make sure you have installed the following before activating the extension:
 
 ## Demonstration
 ![Demonstration](/resources/preview.gif)
+
+## Release Notes
+
+### 0.0.1
+Initial Release; Preview in Progress
