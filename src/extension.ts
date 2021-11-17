@@ -9,13 +9,17 @@ import * as fs from 'fs'
 export function activate(context: vscode.ExtensionContext) {
 	const command = 'diagramspreviewer.start';
 
-	const outDirectory = path.join(context.extensionPath, "media", "out");
-	const target_file = path.join(outDirectory, `test.png`);
-	const target_src_file = path.join(outDirectory, `test.py`);
-	const withDiagramFilePath = path.join(outDirectory, `test`);
+	const docPath = () => vscode.window.activeTextEditor?.document.uri.path ?? "";
 
-	const getContent = () => {
-		var data = fs.readFileSync(target_file).toString('base64');
+	const isValidFileExtension = () => path.extname(docPath()) === '.py';
+
+	const outDirectory = path.join(context.extensionPath, "media", "out");
+	const targetFile = path.join(outDirectory, `test.png`);
+	const targetSrcFile = path.join(outDirectory, `test.py`);
+	const targetFilePathWithoutExt = path.join(outDirectory, `test`);
+
+	const createWebViewContent = () => {
+		var data = fs.readFileSync(targetFile).toString('base64');
 
 		const content = `<!DOCTYPE html>
 			<html>
@@ -29,16 +33,16 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const generateDiagram = async (panel: vscode.WebviewPanel) => {
 		const proc = require('child_process');
-		const cmd = `python3 ${target_src_file}`;
-		console.log(cmd);
+		const cmd = `python3 ${targetSrcFile}`;
 
 		// execute command
 		proc.exec(cmd, (err: string, stdout: string, stderr: string) => {
 			if (err) {
 				console.log('error: ' + err);
+				vscode.window.showErrorMessage("Error executing the code, please make sure you have Python3 (3.6 or higher) and Graphviz installed.");
 				return;
 			}
-			panel.webview.html = getContent();
+			panel.webview.html = createWebViewContent();
 		});
 	}
 
@@ -71,7 +75,7 @@ export function activate(context: vscode.ExtensionContext) {
 			if (!x.includes('fileName')) 
 				withDiagram = `${withDiagram}${x},`
 		});
-		withDiagram = `${withDiagram}filename="${withDiagramFilePath}",`
+		withDiagram = `${withDiagram}filename="${targetFilePathWithoutExt}",`
 
 		withDiagram = `${withDiagram}):\n`
 
@@ -89,8 +93,7 @@ export function activate(context: vscode.ExtensionContext) {
 		fs.mkdir(outDirectory, { recursive: true }, (err) => {
 			if (err) throw err;
 
-
-			fs.writeFile(target_src_file, finalSrc, err => {
+			fs.writeFile(targetSrcFile, finalSrc, err => {
 				if (err)
 					console.log(err);
 				else
@@ -101,6 +104,13 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	const commandHandler = () => {
+
+		// Validation
+		if (!isValidFileExtension()) {
+			vscode.window.showErrorMessage('Sorry, only python files are supported.');
+			return;
+		}
+
 		vscode.window.showInformationMessage('Generating diagram preview...');
 
 		// TODO: check if python is installed, check if the graphviz is installed
