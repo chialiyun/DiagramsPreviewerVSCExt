@@ -39,7 +39,8 @@ export function activate(context: vscode.ExtensionContext) {
 		proc.exec(cmd, (err: string, stdout: string, stderr: string) => {
 			if (err) {
 				console.log('error: ' + err);
-				vscode.window.showErrorMessage("Error executing the code, please make sure you have Python3 (3.6 or higher) and Graphviz installed.");
+				vscode.window.showErrorMessage("Error executing the code, please make sure you have Python3 (3.6 or higher) with the relevant packages (diagrams) and Graphviz installed. You may refer to the Requirements section for more information.");
+
 				return;
 			}
 			panel.webview.html = createWebViewContent();

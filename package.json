@@ -19,6 +19,7 @@
 		"Other"
 	],
 	"icon": "resources/icon.png",
+	"preview": true,
 	"activationEvents": [
         "onCommand:diagramspreviewer.start"
 	],
