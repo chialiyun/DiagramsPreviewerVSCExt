@@ -35,24 +35,20 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	const executionCommand = () => {
+		const fullPath = targetSrcFile.replace(/ /g, '\\ ');
 		if (platform == 'win32')
-			return `py ${targetSrcFile}`;
+			return `py ${fullPath}`;
 		else
-			return `python3 ${targetSrcFile}`;
+			return `python3 ${fullPath}`;
 	}
 
 	const generateDiagram = async (panel: vscode.WebviewPanel) => {
 		const proc = require('child_process');
 		const cmd = executionCommand();
 
-		// to be removed
-		vscode.window.showInformationMessage(cmd);
-
 		// execute command
 		proc.exec(cmd, (err: string, stdout: string, stderr: string) => {
 			if (err) {
-				console.log('error: ' + err);
-				vscode.window.showErrorMessage(err);
 				vscode.window.showErrorMessage("Error executing the code, please make sure you have Python3 (3.6 or higher) with the relevant packages (diagrams) and Graphviz installed. You may refer to the Requirements section for more information.");
 
 				return;

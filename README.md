@@ -12,14 +12,22 @@ The extension can be activated with
 1. Toggle Preview (<kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd> for Mac, <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> for Windows)
 2. Command `Preview Diagrams` to load the diagrams on a separate window on the right
 
-## Requirements
+## Set up Requirements
 Make sure you have installed the following before activating the extension:
+
+### Windows
 - [Python 3](https://www.python.org/downloads/)
-    - If you are using Mac, it should be 
+    - `choco install python3`
     - After installing python, make sure to install `Diagrams` package using `pip3 install diagrams`
 - [GraphViz](https://www.graphviz.org/)
-    - `brew install graphviz` for Mac
-    - `choco install graphviz` for Windows
+    - `choco install graphviz`
+    - Make sure graphviz is added into your environment variables, otherwise, add `C:\Program Files (x86)\Graphviz2.38\bin\dot.exe` to System Path
+### Mac
+- [Python 3](https://www.python.org/downloads/)
+    - `brew install python3`
+    - After installing python, make sure to install `Diagrams` package using `pip3 install diagrams`
+- [GraphViz](https://www.graphviz.org/)
+    - `brew install graphviz`
 
 ## Demonstration
 ![Demonstration](./resources/preview.gif)
