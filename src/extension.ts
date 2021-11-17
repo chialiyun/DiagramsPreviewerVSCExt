@@ -50,6 +50,7 @@ export function activate(context: vscode.ExtensionContext) {
 		// execute command
 		proc.exec(cmd,{cwd: outDirectory}, (err: string, stdout: string, stderr: string) => {
 			if (err) {
+				vscode.window.showErrorMessage(`error: ${err}`)
 				vscode.window.showErrorMessage("Error executing the code, please make sure you have Python3 (3.6 or higher) with the relevant packages (diagrams) and Graphviz installed. You may refer to the Requirements section for more information.");
 
 				return;
