@@ -21,7 +21,7 @@ Make sure you have installed the following before activating the extension:
     - After installing python, make sure to install `Diagrams` package using `pip3 install diagrams`
 - [GraphViz](https://www.graphviz.org/)
     - `choco install graphviz`
-    - Make sure graphviz is added into your environment variables, otherwise, add `C:\Program Files (x86)\Graphviz2.38\bin\dot.exe` to System Path
+    - Make sure graphviz is added into your environment variables. You may add `C:\Program Files (x86)\Graphviz2.38\bin\dot.exe` to System Path manually if it is not added automatically during the installation earlier.
 ### Mac
 - [Python 3](https://www.python.org/downloads/)
     - `brew install python3`

@@ -15,9 +15,10 @@ export function activate(context: vscode.ExtensionContext) {
 	const isValidFileExtension = () => path.extname(docPath()) === '.py';
 
 	const outDirectory = path.join(context.extensionPath, "media", "out");
-	const targetFile = path.join(outDirectory, `test.png`);
-	const targetSrcFile = path.join(outDirectory, `test.py`);
-	const targetFilePathWithoutExt = path.join(outDirectory, `test`);
+	const targetSrcFileName = 'test.py';
+	const targetFile = path.join(outDirectory, 'test.png');
+	const targetSrcFile = path.join(outDirectory, targetSrcFileName);
+	const targetFilePathWithoutExt = path.join(outDirectory, 'test');
 
 	let isPanelOpen = false;
 
@@ -35,11 +36,10 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	const executionCommand = () => {
-		const fullPath = targetSrcFile.replace(/ /g, '\\ ');
 		if (platform == 'win32')
-			return `py ${fullPath}`;
+			return `py ${targetSrcFileName}`;
 		else
-			return `python3 ${fullPath}`;
+			return `python3 ${targetSrcFileName}`;
 	}
 
 	const generateDiagram = async (panel: vscode.WebviewPanel) => {
@@ -47,7 +47,7 @@ export function activate(context: vscode.ExtensionContext) {
 		const cmd = executionCommand();
 
 		// execute command
-		proc.exec(cmd, (err: string, stdout: string, stderr: string) => {
+		proc.exec(cmd,{cwd: outDirectory}, (err: string, stdout: string, stderr: string) => {
 			if (err) {
 				vscode.window.showErrorMessage("Error executing the code, please make sure you have Python3 (3.6 or higher) with the relevant packages (diagrams) and Graphviz installed. You may refer to the Requirements section for more information.");
 
