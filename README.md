@@ -22,7 +22,7 @@ Make sure you have installed the following before activating the extension:
     - `choco install graphviz` for Windows
 
 ## Demonstration
-![Demonstration](https://github.com/chialiyun/DiagramAsCodePreviewVSCExt/blob/master/resources/preview.gif)
+![Demonstration](./resources/preview.gif)
 
 ## Release Notes
 
