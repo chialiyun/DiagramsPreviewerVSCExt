@@ -19,7 +19,6 @@ export function activate(context: vscode.ExtensionContext) {
 	const targetSrcFileName = `${fileName}.py`;
 	const targetFile = path.join(outDirectory, `${fileName}.png`);
 	const targetSrcFile = path.join(outDirectory, targetSrcFileName);
-	const targetFilePathWithoutExt = path.join(outDirectory, fileName);
 
 	let isPanelOpen = false;
 
@@ -50,7 +49,6 @@ export function activate(context: vscode.ExtensionContext) {
 		// execute command
 		proc.exec(cmd,{cwd: outDirectory}, (err: string, stdout: string, stderr: string) => {
 			if (err) {
-				vscode.window.showErrorMessage(`error: ${err}`)
 				vscode.window.showErrorMessage("Error executing the code, please make sure you have Python3 (3.6 or higher) with the relevant packages (diagrams) and Graphviz installed. You may refer to the Requirements section for more information.");
 
 				return;
@@ -92,7 +90,7 @@ export function activate(context: vscode.ExtensionContext) {
 			if (!x.includes('fileName')) 
 				withDiagram = `${withDiagram}${x},`
 		});
-		withDiagram = `${withDiagram}filename="${targetFilePathWithoutExt}",`
+		withDiagram = `${withDiagram}filename="${fileName}",`
 
 		withDiagram = `${withDiagram}):\n`
 
