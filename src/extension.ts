@@ -2,7 +2,8 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as fs from 'fs'
+import * as fs from 'fs';
+import { platform } from 'process';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -18,6 +19,8 @@ export function activate(context: vscode.ExtensionContext) {
 	const targetSrcFile = path.join(outDirectory, `test.py`);
 	const targetFilePathWithoutExt = path.join(outDirectory, `test`);
 
+	let isPanelOpen = false;
+
 	const createWebViewContent = () => {
 		var data = fs.readFileSync(targetFile).toString('base64');
 
@@ -31,9 +34,16 @@ export function activate(context: vscode.ExtensionContext) {
 		return content;
 	}
 
+	const executionCommand = () => {
+		if (platform == 'win32')
+			return `py ${targetSrcFile}`;
+		else
+			return `python3 ${targetSrcFile}`;
+	}
+
 	const generateDiagram = async (panel: vscode.WebviewPanel) => {
 		const proc = require('child_process');
-		const cmd = `python3 ${targetSrcFile}`;
+		const cmd = executionCommand();
 
 		// execute command
 		proc.exec(cmd, (err: string, stdout: string, stderr: string) => {
@@ -43,7 +53,11 @@ export function activate(context: vscode.ExtensionContext) {
 
 				return;
 			}
+
 			panel.webview.html = createWebViewContent();
+			isPanelOpen = true;
+
+			vscode.window.showInformationMessage("Diagram is generated successfully.");
 		});
 	}
 
@@ -105,6 +119,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	const commandHandler = () => {
+		const _disposables: vscode.Disposable[] = [];
 
 		// Validation
 		if (!isValidFileExtension()) {
@@ -113,8 +128,6 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		vscode.window.showInformationMessage('Generating diagram preview...');
-
-		// TODO: check if python is installed, check if the graphviz is installed
 
 		const panel = vscode.window.createWebviewPanel(
 			'diagramsPreview', 'Diagrams Preview',
@@ -125,11 +138,17 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		);
 
-		vscode.workspace.onDidSaveTextDocument((e) => {
-			vscode.window.showInformationMessage('Reflecting new changes to diagram preview...');
+		panel.onDidDispose(() => {
+			isPanelOpen = false;
+		}, null, context.subscriptions);
 
-			updateTempSourceFile(panel);
-		});
+		vscode.workspace.onDidSaveTextDocument((e) => {
+			if (isPanelOpen) {
+				vscode.window.showInformationMessage('Reflecting new changes to diagram preview...');
+
+				updateTempSourceFile(panel);
+			}
+		}, null, _disposables);
 
 		updateTempSourceFile(panel);
 	}
