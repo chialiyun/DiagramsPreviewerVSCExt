@@ -14,16 +14,17 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const isValidFileExtension = () => path.extname(docPath()) === '.py';
 
-	const outDirectory = path.join(context.extensionPath, "media", "out");
-	const targetSrcFileName = 'test.py';
-	const targetFile = path.join(outDirectory, 'test.png');
+	const outDirectory = path.join(context.extensionPath, "out", "docs");
+	const fileName = 'previewDiagram';
+	const targetSrcFileName = `${fileName}.py`;
+	const targetFile = path.join(outDirectory, `${fileName}.png`);
 	const targetSrcFile = path.join(outDirectory, targetSrcFileName);
-	const targetFilePathWithoutExt = path.join(outDirectory, 'test');
+	const targetFilePathWithoutExt = path.join(outDirectory, fileName);
 
 	let isPanelOpen = false;
 
 	const createWebViewContent = () => {
-		var data = fs.readFileSync(targetFile).toString('base64');
+		var data = fs.readFileSync(targetFile.split(/\ /).join('\ ')).toString('base64');
 
 		const content = `<!DOCTYPE html>
 			<html>
