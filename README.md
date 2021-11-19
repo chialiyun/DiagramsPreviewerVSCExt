@@ -46,3 +46,10 @@ with Diagram("Web Service",show=False): # It is recommended to set "show" to fal
 
 ## Release Notes
 Please refer to `CHANGELOG.md`.
+
+## Show Support
+If you find this extension helpful, please star the repo and leave a review to help others find it easily too!
+
+You may [buy me a coffee](https://www.buymeacoffee.com/chiaDev) if you would like to show some support in my open-source journey. It will be greatly appreciated! 🥰
+
+<a href="https://www.buymeacoffee.com/chiaDev" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a> 
