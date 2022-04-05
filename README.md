@@ -24,7 +24,7 @@ Make sure you have installed the following before activating the extension:
 ### Mac
 - [Python 3](https://www.python.org/downloads/)
     - `brew install python3`
-    - After installing python, make sure to install `Diagrams` package using `pip3 install diagrams`
+    - After installing python, make sure to install `Diagrams` package using `pip3 install diagrams` or `python3 -m pip install diagrams`
 - [GraphViz](https://www.graphviz.org/)
     - `brew install graphviz`
 
