@@ -27,9 +27,16 @@ export function activate(context: vscode.ExtensionContext) {
 
 		const content = `<!DOCTYPE html>
 			<html>
-			  <body>
-				<img src="data:image/png;base64, ${data}">
-			  </body>
+			<head>
+				<script src='https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js'></script>
+			</head>
+				<body>
+					<img src="data:image/png;base64, ${data}" id="graph">
+				</body>
+
+				<script>
+					panzoom(document.getElementById('graph'));
+				</script>
 			</html>`;
 
 		return content;
