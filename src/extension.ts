@@ -26,16 +26,22 @@ export function activate(context: vscode.ExtensionContext) {
 		var data = fs.readFileSync(targetFile.split(/\ /).join('\ ')).toString('base64');
 
 		const content = `<!DOCTYPE html>
-			<html>
+			<html style="height: 100%">
 			<head>
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" integrity="sha384-ejwKkLla8gPP8t2u0eQyL0Q/4ItcnyveF505U0NIobD/SMsNyXrLti6CWaD0L52l" crossorigin="anonymous">
 				<script src='https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js'></script>
+				<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 			</head>
-				<body>
-					<img src="data:image/png;base64, ${data}" id="graph">
+				<body style="height: 100%">
+					<button type="button" class="btn btn-light "><i class="bi bi-file-earmark-arrow-down"></i></button>
+					<div style="overflow:hidden;min-height:100%;height:100%">
+						<img src="data:image/png;base64, ${data}" id="graph">
+					</div>
 				</body>
 
 				<script>
-					panzoom(document.getElementById('graph'));
+					panzoom(document.getElementById('graph'), {contain:'outside'});
 				</script>
 			</html>`;
 
