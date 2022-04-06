@@ -34,14 +34,21 @@ export function activate(context: vscode.ExtensionContext) {
 				<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 			</head>
 				<body style="height: 100%">
-					<button type="button" class="btn btn-light "><i class="bi bi-file-earmark-arrow-down"></i></button>
+					<button type="button" class="btn btn-light" onclick="save()"><i class="bi bi-file-earmark-arrow-down"></i></button>
 					<div style="overflow:hidden;min-height:100%;height:100%">
 						<img src="data:image/png;base64, ${data}" id="graph">
 					</div>
 				</body>
 
 				<script>
+					/** vscode ref **/
+					const vscode = acquireVsCodeApi();
+
 					panzoom(document.getElementById('graph'), {contain:'outside'});
+
+					function save() {
+						vscode.postMessage({command: "save", text: "BUTTON PRESSED!"});
+					}
 				</script>
 			</html>`;
 
@@ -154,6 +161,12 @@ export function activate(context: vscode.ExtensionContext) {
 		panel.onDidDispose(() => {
 			isPanelOpen = false;
 		}, null, context.subscriptions);
+
+		panel.webview.onDidReceiveMessage(msg => {
+			switch(msg.command) {
+				case 'save': vscode.window.showInformationMessage("Saving to downloads...")
+			}
+		})
 
 		vscode.workspace.onDidSaveTextDocument((e) => {
 			if (isPanelOpen) {
