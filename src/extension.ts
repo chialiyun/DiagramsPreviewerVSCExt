@@ -177,8 +177,8 @@ export function activate(context: vscode.ExtensionContext) {
 						// if user selected a path
 						if (destPath !== undefined) {
 							fs.copyFile(targetFile, destPath, (err) => {
-								if (err) vscode.window.showInformationMessage("Sorry, facing an error while saving to desintation.");
-								vscode.window.showInformationMessage("Saved!")
+								if (err) vscode.window.showInformationMessage(`Sorry, facing an error while saving to desintation: ${err}`);
+								else vscode.window.showInformationMessage("Saved!")
 							  });
 						}
 						
