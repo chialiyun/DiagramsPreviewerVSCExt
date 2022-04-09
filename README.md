@@ -4,6 +4,8 @@ An extension to preview [Diagrams](https://diagrams.mingrammer.com/) (Diagram as
 ## Features
 - Preview Diagram
 - Update Diagrams Preview on save
+- Pan/zoom diagram on the previewer window to have a closer view of components
+- Save the image to a destination of your choice
 
 ## Usage
 The extension can be activated with
@@ -29,7 +31,7 @@ Make sure you have installed the following before activating the extension:
     - `brew install graphviz`
 
 ## Demonstration
-![Demonstration GIF](./resources/preview.gif)
+![Demonstration GIF](./resources/preview_V1.0.0.gif)
 
 ### Source Code Example:
 ```
