@@ -9,7 +9,7 @@ An extension to preview [Diagrams](https://diagrams.mingrammer.com/) (Diagram as
 
 ## Usage
 The extension can be activated with
-1. Toggle Preview (<kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd> for Mac, <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> for Windows)
+1. Toggle Preview (<kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> for Mac, <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> for Windows)
 2. Command `Preview Diagrams` to load the diagrams on a separate window on the right
 
 ## Requirements (Set up)
