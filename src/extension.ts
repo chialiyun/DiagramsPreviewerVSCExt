@@ -169,10 +169,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 					vscode.window.showInformationMessage("Opening file save dialog...")
 					vscode.window.showSaveDialog({
-						saveLabel: "export",
+						saveLabel: "Export",
 						filters: filter,
 					}).then(fileInfos => {
-						const destPath = fileInfos?.path as string;
+						const destPath = fileInfos?.fsPath as string;
 
 						// if user selected a path
 						if (destPath !== undefined) {
