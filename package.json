@@ -2,7 +2,7 @@
   "name": "diagramspreviewer",
   "displayName": "Diagrams Previewer",
   "description": "Translate the code into diagrams",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "publisher": "tehpeng",
   "author": {
     "name": "Chia Li Yun"
