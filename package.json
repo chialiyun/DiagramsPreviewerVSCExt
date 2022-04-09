@@ -2,7 +2,7 @@
   "name": "diagramspreviewer",
   "displayName": "Diagrams Previewer",
   "description": "Translate the code into diagrams",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "tehpeng",
   "author": {
     "name": "Chia Li Yun"
@@ -19,7 +19,7 @@
     "Other"
   ],
   "icon": "resources/icon.png",
-  "preview": true,
+  "preview": false,
   "activationEvents": [
     "onCommand:diagramspreviewer.start"
   ],
