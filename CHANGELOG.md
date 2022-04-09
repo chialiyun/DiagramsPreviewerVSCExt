@@ -11,3 +11,6 @@ All notable changes to the "diagramasacodepreview" extension will be documented 
 
 ## [1.0.1]
 - Official release
+
+## [1.0.2]
+- Provide error message when file save failed
