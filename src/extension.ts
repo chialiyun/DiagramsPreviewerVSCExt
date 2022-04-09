@@ -167,16 +167,21 @@ export function activate(context: vscode.ExtensionContext) {
 				case 'save': {
 					const filter = { Images: ["png"] };
 
-					vscode.window.showInformationMessage("Saving to downloads...")
+					vscode.window.showInformationMessage("Opening file save dialog...")
 					vscode.window.showSaveDialog({
 						saveLabel: "export",
 						filters: filter,
 					}).then(fileInfos => {
 						const destPath = fileInfos?.path as string;
-						fs.copyFile(targetFile, destPath, (err) => {
-							if (err) vscode.window.showInformationMessage("Sorry, facing an error while saving to desintation.");
-							vscode.window.showInformationMessage("Saved!")
-						  });
+
+						// if user selected a path
+						if (destPath !== undefined) {
+							fs.copyFile(targetFile, destPath, (err) => {
+								if (err) vscode.window.showInformationMessage("Sorry, facing an error while saving to desintation.");
+								vscode.window.showInformationMessage("Saved!")
+							  });
+						}
+						
 					});
 				}
 			}
