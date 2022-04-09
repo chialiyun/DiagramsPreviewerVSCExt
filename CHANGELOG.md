@@ -14,3 +14,7 @@ All notable changes to the "diagramasacodepreview" extension will be documented 
 
 ## [1.0.2]
 - Provide error message when file save failed
+
+## [1.0.3]
+- Update README.md - toggle preview instruction for Mac
+- Fix Windows save file destination path error
