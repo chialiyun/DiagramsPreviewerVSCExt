@@ -12,6 +12,13 @@ The extension can be activated with
 1. Toggle Preview (<kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> for Mac, <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> for Windows)
 2. Command `Preview Diagrams` to load the diagrams on a separate window on the right
 
+### Configurations
+We provide the following settings to the extension:
+
+|       | type | default |     |
+| -------| ------- |-----|-----|
+| diagramspreviewer.pythonCommand|string|default| Currently, this setting only affected Mac users. By default, python3 is installed in Mac and has to run as `python3`, but if you have set python3 as default (`python`), then you have to select `python` option here.
+
 ## Requirements (Set up)
 Make sure you have installed the following before activating the extension:
 
