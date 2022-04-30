@@ -18,3 +18,10 @@ All notable changes to the "diagramasacodepreview" extension will be documented 
 ## [1.0.3]
 - Update README.md - toggle preview instruction for Mac
 - Fix Windows save file destination path error
+
+## [1.0.4]
+- NIL
+
+## [1.0.5]
+- New settings: Configure your own python command
+- Updated README.md - on the settings configurations available
