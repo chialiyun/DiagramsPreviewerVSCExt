@@ -30,7 +30,22 @@
         "command": "diagramspreviewer.start",
         "title": "Preview Diagrams"
       }
-    ]
+    ],
+    "configuration": {
+      "type":"object",
+      "title": "Diagrams Previewer",
+      "properties": {
+        "diagramspreviewer.pythonCommand":{
+          "enum": [
+            "default",
+            "python",
+            "python3"
+          ],
+          "default": "default",
+          "description": "The python command that runs version 3 of python on your machine"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

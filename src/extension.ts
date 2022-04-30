@@ -5,9 +5,22 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { platform } from 'process';
 
+let python3Commmand:string | undefined
+function initSettings() {
+	const workspace = vscode.workspace;
+    var settings = workspace.getConfiguration('diagramspreviewer');
+
+	python3Commmand = settings.get("pythonCommand")
+}
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+
+	// settings
+	initSettings()
+	
+	// commmands
 	const command = 'diagramspreviewer.start';
 
 	const docPath = () => vscode.window.activeTextEditor?.document.uri.path ?? "";
@@ -58,8 +71,17 @@ export function activate(context: vscode.ExtensionContext) {
 	const executionCommand = () => {
 		if (platform == 'win32')
 			return `py ${targetSrcFileName}`;
-		else
-			return `python3 ${targetSrcFileName}`;
+		else {
+			let macCommand = `python3 ${targetSrcFileName}`
+			switch (python3Commmand) {
+				case 'python': {
+					macCommand = `${python3Commmand} ${targetSrcFileName}`;
+					break;
+				}
+			}
+
+			return macCommand
+		}
 	}
 
 	const generateDiagram = async (panel: vscode.WebviewPanel) => {
@@ -199,6 +221,10 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	context.subscriptions.push(vscode.commands.registerCommand(command, commandHandler));
+
+	vscode.workspace.onDidChangeConfiguration(function () {
+        initSettings();
+    }, null, context.subscriptions);
 }
 
 // this method is called when your extension is deactivated
