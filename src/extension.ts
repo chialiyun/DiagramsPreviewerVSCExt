@@ -129,7 +129,7 @@ export function activate(context: vscode.ExtensionContext) {
 		// Form `withDiagram` line
 		let withDiagram = 'with Diagram(';
 		args.forEach(x => {
-			if (!x.includes('fileName')) 
+			if (!x.toLowerCase().includes('filename')) 
 				withDiagram = `${withDiagram}${x},`
 		});
 		withDiagram = `${withDiagram}filename="${fileName}",`
