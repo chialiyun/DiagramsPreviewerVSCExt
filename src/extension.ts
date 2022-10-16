@@ -5,12 +5,51 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { platform } from 'process';
 
-let python3Commmand:string | undefined
+let python3Commmand: string | undefined
 function initSettings() {
 	const workspace = vscode.workspace;
-    var settings = workspace.getConfiguration('diagramspreviewer');
+	var settings = workspace.getConfiguration('diagramspreviewer');
 
 	python3Commmand = settings.get("pythonCommand")
+}
+
+const getCurrentWorkspace = () => {
+	const workplaceFolders = vscode.workspace.workspaceFolders
+
+	if (workplaceFolders !== undefined && workplaceFolders?.length >= 1) {
+		return workplaceFolders[0].uri.path
+	}
+
+	return undefined
+}
+
+const getVSCodeInterpreterPath = async () => {
+	const workspaceFolder = getCurrentWorkspace()
+	if (workspaceFolder !== undefined) {
+		// need try catch here
+		return await vscode.commands.executeCommand(
+			'python.interpreterPath', {
+				workspaceFolder:workspaceFolder
+			})
+	}
+}
+
+const getVSCodeDefaultInterpreterPath = () => {
+	const workspace = vscode.workspace;
+	var vsPythonSettings = workspace.getConfiguration('python');
+	const vsPythonDefault = vsPythonSettings.get("defaultInterpreterPath")
+
+	return vsPythonDefault
+}
+
+const getVSCodePythonEnv = async () => {
+	const vsCodeInterpreterPath = await getVSCodeInterpreterPath()
+
+	if (vsCodeInterpreterPath !== undefined) {
+		return vsCodeInterpreterPath
+	}
+	
+	return getVSCodeDefaultInterpreterPath()
 }
 
 // this method is called when your extension is activated
@@ -19,7 +58,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// settings
 	initSettings()
-	
+
 	// commmands
 	const command = 'diagramspreviewer.start';
 
@@ -68,7 +107,13 @@ export function activate(context: vscode.ExtensionContext) {
 		return content;
 	}
 
-	const executionCommand = () => {
+	const executionCommand = async () => {
+		if (python3Commmand === 'default') {
+			const path = await getVSCodePythonEnv()
+			vscode.window.showInformationMessage(`default: ${path} ${targetSrcFileName}}`)
+			return `${path} ${targetSrcFileName}`
+		}
+
 		if (platform == 'win32')
 			return `py ${targetSrcFileName}`;
 		else {
@@ -80,16 +125,20 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 			}
 
+
+			vscode.window.showInformationMessage(`command: ${macCommand}`)
 			return macCommand
 		}
 	}
 
 	const generateDiagram = async (panel: vscode.WebviewPanel) => {
 		const proc = require('child_process');
-		const cmd = executionCommand();
+		const cmd = await executionCommand();
 
 		// execute command
-		proc.exec(cmd,{cwd: outDirectory}, (err: string, stdout: string, stderr: string) => {
+		proc.exec(cmd, { cwd: outDirectory }, (err: string, stdout: string, stderr: string) => {
+			vscode.window.showInformationMessage("hello.");
+
 			if (err) {
 				vscode.window.showErrorMessage("Error executing the code, please make sure you have Python3 (3.6 or higher) with the relevant packages (diagrams) and Graphviz installed. You may refer to the Requirements section for more information.");
 
@@ -116,20 +165,20 @@ export function activate(context: vscode.ExtensionContext) {
 			wholeText = editor?.document.getText(textRange)
 
 			line++;
-			
+
 			if (!wholeText?.includes("with Diagram"))
 				finalSrc = `${finalSrc}${wholeText}\n`;
-		} while(!wholeText?.includes("with Diagram"));
+		} while (!wholeText?.includes("with Diagram"));
 
 		// Get `withDiagram args`
 		const opening = wholeText.indexOf('(');
 		const closing = wholeText.indexOf(')');
-		const args = wholeText.substring(opening+1, closing).split(",");
+		const args = wholeText.substring(opening + 1, closing).split(",");
 
 		// Form `withDiagram` line
 		let withDiagram = 'with Diagram(';
 		args.forEach(x => {
-			if (!x.toLowerCase().includes('filename')) 
+			if (!x.toLowerCase().includes('filename'))
 				withDiagram = `${withDiagram}${x},`
 		});
 		withDiagram = `${withDiagram}filename="${fileName}",`
@@ -155,7 +204,7 @@ export function activate(context: vscode.ExtensionContext) {
 					console.log(err);
 				else
 					generateDiagram(panel);
-			});	
+			});
 		});
 
 	}
@@ -185,7 +234,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}, null, context.subscriptions);
 
 		panel.webview.onDidReceiveMessage(msg => {
-			switch(msg.command) {
+			switch (msg.command) {
 				case 'save': {
 					const filter = { Images: ["png"] };
 
@@ -201,9 +250,9 @@ export function activate(context: vscode.ExtensionContext) {
 							fs.copyFile(targetFile, destPath, (err) => {
 								if (err) vscode.window.showInformationMessage(`Sorry, facing an error while saving to desintation: ${err}`);
 								else vscode.window.showInformationMessage("Saved!")
-							  });
+							});
 						}
-						
+
 					});
 				}
 			}
@@ -223,9 +272,9 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand(command, commandHandler));
 
 	vscode.workspace.onDidChangeConfiguration(function () {
-        initSettings();
-    }, null, context.subscriptions);
+		initSettings();
+	}, null, context.subscriptions);
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
