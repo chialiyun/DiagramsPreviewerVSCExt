@@ -108,7 +108,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	const executionCommand = async () => {
-		if (python3Commmand === 'default') {
+		if (python3Commmand === 'VS Code Python Interpreter') {
 			const path = await getVSCodePythonEnv()
 			vscode.window.showInformationMessage(`default: ${path} ${targetSrcFileName}}`)
 			return `${path} ${targetSrcFileName}`
@@ -137,8 +137,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 		// execute command
 		proc.exec(cmd, { cwd: outDirectory }, (err: string, stdout: string, stderr: string) => {
-			vscode.window.showInformationMessage("hello.");
-
 			if (err) {
 				vscode.window.showErrorMessage("Error executing the code, please make sure you have Python3 (3.6 or higher) with the relevant packages (diagrams) and Graphviz installed. You may refer to the Requirements section for more information.");
 

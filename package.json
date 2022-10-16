@@ -39,7 +39,8 @@
           "enum": [
             "default",
             "python",
-            "python3"
+            "python3",
+            "VS Code Python Interpreter"
           ],
           "default": "default",
           "description": "The python command that runs version 3 of python on your machine"
