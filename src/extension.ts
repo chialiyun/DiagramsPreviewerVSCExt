@@ -5,12 +5,76 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { platform } from 'process';
 
-let python3Commmand:string | undefined
+let pythonInterpreter: string | undefined
+const vscodePythonExtID = "ms-python.python"
+const vsCodePythonExtURL = "https://marketplace.visualstudio.com/items?itemName=ms-python.python"
+
 function initSettings() {
 	const workspace = vscode.workspace;
-    var settings = workspace.getConfiguration('diagramspreviewer');
+	var settings = workspace.getConfiguration('diagramspreviewer');
 
-	python3Commmand = settings.get("pythonCommand")
+	pythonInterpreter = settings.get("pythonCommand")
+}
+
+const getCurrentWorkspace = () => {
+	const workplaceFolders = vscode.workspace.workspaceFolders
+
+	if (workplaceFolders !== undefined && workplaceFolders?.length >= 1) {
+		return workplaceFolders[0].uri.path
+	}
+
+	return undefined
+}
+
+const getVSCodeInterpreterPath = async () => {
+	const workspaceFolder = getCurrentWorkspace()
+	if (workspaceFolder !== undefined) {
+		// need try catch here
+		return await vscode.commands.executeCommand(
+			'python.interpreterPath', {
+			workspaceFolder: workspaceFolder
+		})
+	}
+}
+
+const getVSCodeDefaultInterpreterPath = () => {
+	const workspace = vscode.workspace;
+	var vsPythonSettings = workspace.getConfiguration('python');
+	const vsPythonDefault = vsPythonSettings.get("defaultInterpreterPath")
+
+	return vsPythonDefault
+}
+
+const getVSCodePythonEnv = async () => {
+	const vsCodeInterpreterPath = await getVSCodeInterpreterPath()
+
+	if (vsCodeInterpreterPath !== undefined) {
+		return vsCodeInterpreterPath
+	}
+
+	return getVSCodeDefaultInterpreterPath()
+}
+
+// vsCodePythonExtInstalledValidator returns false if the validator fails
+const vsCodePythonExtInstalledValidator = () => {
+	if (pythonInterpreter === 'VS Code Python Interpreter') {
+		const vscodePythonExt = vscode.extensions.all.find((ext => {
+			return ext.id == vscodePythonExtID && ext.isActive
+		}))
+
+		if (vscodePythonExt === undefined) {
+			// change link to button if possible
+			vscode.window.showErrorMessage(`python extension is not installed or disabled. Please check the extension.`, ...['See Python Extension'])
+				.then(selection => {
+					if (selection === "See Python Extension")
+						vscode.env.openExternal(vscode.Uri.parse(vsCodePythonExtURL))
+				})
+
+			return false
+		}
+	}
+
+	return true
 }
 
 // this method is called when your extension is activated
@@ -19,7 +83,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// settings
 	initSettings()
-	
+
 	// commmands
 	const command = 'diagramspreviewer.start';
 
@@ -68,30 +132,34 @@ export function activate(context: vscode.ExtensionContext) {
 		return content;
 	}
 
-	const executionCommand = () => {
+	const executionCommand = async () => {
+		if (pythonInterpreter === 'VS Code Python Interpreter') {
+			const path = await getVSCodePythonEnv()
+			return `${path} ${targetSrcFileName}`
+		}
+
 		if (platform == 'win32')
 			return `py ${targetSrcFileName}`;
 		else {
 			let macCommand = `python3 ${targetSrcFileName}`
-			switch (python3Commmand) {
+			switch (pythonInterpreter) {
 				case 'python': {
-					macCommand = `${python3Commmand} ${targetSrcFileName}`;
+					macCommand = `${pythonInterpreter} ${targetSrcFileName}`;
 					break;
 				}
 			}
-
 			return macCommand
 		}
 	}
 
 	const generateDiagram = async (panel: vscode.WebviewPanel) => {
 		const proc = require('child_process');
-		const cmd = executionCommand();
+		const cmd = await executionCommand();
 
 		// execute command
-		proc.exec(cmd,{cwd: outDirectory}, (err: string, stdout: string, stderr: string) => {
+		proc.exec(cmd, { cwd: outDirectory }, (err: string, stdout: string, stderr: string) => {
 			if (err) {
-				vscode.window.showErrorMessage("Error executing the code, please make sure you have Python3 (3.6 or higher) with the relevant packages (diagrams) and Graphviz installed. You may refer to the Requirements section for more information.");
+				vscode.window.showErrorMessage(`Error executing the code, please make sure you have Python3 (3.6 or higher) with the relevant packages (diagrams) and Graphviz installed. You may refer to the Requirements section for more information.`);
 
 				return;
 			}
@@ -116,20 +184,20 @@ export function activate(context: vscode.ExtensionContext) {
 			wholeText = editor?.document.getText(textRange)
 
 			line++;
-			
+
 			if (!wholeText?.includes("with Diagram"))
 				finalSrc = `${finalSrc}${wholeText}\n`;
-		} while(!wholeText?.includes("with Diagram"));
+		} while (!wholeText?.includes("with Diagram"));
 
 		// Get `withDiagram args`
 		const opening = wholeText.indexOf('(');
 		const closing = wholeText.indexOf(')');
-		const args = wholeText.substring(opening+1, closing).split(",");
+		const args = wholeText.substring(opening + 1, closing).split(",");
 
 		// Form `withDiagram` line
 		let withDiagram = 'with Diagram(';
 		args.forEach(x => {
-			if (!x.toLowerCase().includes('filename')) 
+			if (!x.toLowerCase().includes('filename'))
 				withDiagram = `${withDiagram}${x},`
 		});
 		withDiagram = `${withDiagram}filename="${fileName}",`
@@ -155,7 +223,7 @@ export function activate(context: vscode.ExtensionContext) {
 					console.log(err);
 				else
 					generateDiagram(panel);
-			});	
+			});
 		});
 
 	}
@@ -167,6 +235,10 @@ export function activate(context: vscode.ExtensionContext) {
 		if (!isValidFileExtension()) {
 			vscode.window.showErrorMessage('Sorry, only python files are supported.');
 			return;
+		}
+
+		if (!vsCodePythonExtInstalledValidator()) {
+			return
 		}
 
 		vscode.window.showInformationMessage('Generating diagram preview...');
@@ -185,7 +257,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}, null, context.subscriptions);
 
 		panel.webview.onDidReceiveMessage(msg => {
-			switch(msg.command) {
+			switch (msg.command) {
 				case 'save': {
 					const filter = { Images: ["png"] };
 
@@ -201,15 +273,23 @@ export function activate(context: vscode.ExtensionContext) {
 							fs.copyFile(targetFile, destPath, (err) => {
 								if (err) vscode.window.showInformationMessage(`Sorry, facing an error while saving to desintation: ${err}`);
 								else vscode.window.showInformationMessage("Saved!")
-							  });
+							});
 						}
-						
+
 					});
 				}
 			}
 		})
 
 		vscode.workspace.onDidSaveTextDocument((e) => {
+			if (!isValidFileExtension()) {
+				return
+			}
+
+			if (!vsCodePythonExtInstalledValidator()) {
+				return
+			}
+
 			if (isPanelOpen) {
 				vscode.window.showInformationMessage('Reflecting new changes to diagram preview...');
 
@@ -223,9 +303,9 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand(command, commandHandler));
 
 	vscode.workspace.onDidChangeConfiguration(function () {
-        initSettings();
-    }, null, context.subscriptions);
+		initSettings();
+	}, null, context.subscriptions);
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
