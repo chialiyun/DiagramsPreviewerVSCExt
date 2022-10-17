@@ -25,3 +25,8 @@ All notable changes to the "diagramasacodepreview" extension will be documented 
 ## [1.0.5]
 - New settings: Configure your own python command
 - Updated README.md - on the settings configurations available
+
+## [1.0.6]
+- Support using [VS Code's python extension's interpreter](https://code.visualstudio.com/docs/python/environments#_manually-specify-an-interpreter) via introducting new option 
+(`VS Code Python Interpreter`) to python command configuration
+- Updated README.md - on the settings configurations available

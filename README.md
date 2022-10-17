@@ -17,7 +17,7 @@ We provide the following settings to the extension:
 
 |       | type | default |     |
 | -------| ------- |-----|-----|
-| diagramspreviewer.pythonCommand|string|default| Currently, this setting only affected Mac users. By default, python3 is installed in Mac and has to run as `python3`, but if you have set python3 as default (`python`), then you have to select `python` option here.
+| diagramspreviewer.pythonCommand|string|default| 🆕 option: "VS Code Python Interpreter". This option will use the interpreter set on [VS Code's python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python) and it will be applicable to any platform (Windows / Mac). <br/><br/>The other options will only apply to Mac platform.
 
 ## Requirements (Set up)
 Make sure you have installed the following before activating the extension:
