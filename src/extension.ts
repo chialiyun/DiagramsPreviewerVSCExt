@@ -5,12 +5,15 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { platform } from 'process';
 
-let python3Commmand: string | undefined
+let pythonInterpreter: string | undefined
+const vscodePythonExtID = "ms-python.python"
+const vsCodePythonExtURL = "https://marketplace.visualstudio.com/items?itemName=ms-python.python"
+
 function initSettings() {
 	const workspace = vscode.workspace;
 	var settings = workspace.getConfiguration('diagramspreviewer');
 
-	python3Commmand = settings.get("pythonCommand")
+	pythonInterpreter = settings.get("pythonCommand")
 }
 
 const getCurrentWorkspace = () => {
@@ -29,8 +32,8 @@ const getVSCodeInterpreterPath = async () => {
 		// need try catch here
 		return await vscode.commands.executeCommand(
 			'python.interpreterPath', {
-				workspaceFolder:workspaceFolder
-			})
+			workspaceFolder: workspaceFolder
+		})
 	}
 }
 
@@ -48,8 +51,30 @@ const getVSCodePythonEnv = async () => {
 	if (vsCodeInterpreterPath !== undefined) {
 		return vsCodeInterpreterPath
 	}
-	
+
 	return getVSCodeDefaultInterpreterPath()
+}
+
+// vsCodePythonExtInstalledValidator returns false if the validator fails
+const vsCodePythonExtInstalledValidator = () => {
+	if (pythonInterpreter === 'VS Code Python Interpreter') {
+		const vscodePythonExt = vscode.extensions.all.find((ext => {
+			return ext.id == vscodePythonExtID && ext.isActive
+		}))
+
+		if (vscodePythonExt === undefined) {
+			// change link to button if possible
+			vscode.window.showErrorMessage(`python extension is not installed or disabled. Please check the extension.`, ...['See Python Extension'])
+				.then(selection => {
+					if (selection === "See Python Extension")
+						vscode.env.openExternal(vscode.Uri.parse(vsCodePythonExtURL))
+				})
+
+			return false
+		}
+	}
+
+	return true
 }
 
 // this method is called when your extension is activated
@@ -108,9 +133,8 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	const executionCommand = async () => {
-		if (python3Commmand === 'VS Code Python Interpreter') {
+		if (pythonInterpreter === 'VS Code Python Interpreter') {
 			const path = await getVSCodePythonEnv()
-			vscode.window.showInformationMessage(`default: ${path} ${targetSrcFileName}}`)
 			return `${path} ${targetSrcFileName}`
 		}
 
@@ -118,15 +142,12 @@ export function activate(context: vscode.ExtensionContext) {
 			return `py ${targetSrcFileName}`;
 		else {
 			let macCommand = `python3 ${targetSrcFileName}`
-			switch (python3Commmand) {
+			switch (pythonInterpreter) {
 				case 'python': {
-					macCommand = `${python3Commmand} ${targetSrcFileName}`;
+					macCommand = `${pythonInterpreter} ${targetSrcFileName}`;
 					break;
 				}
 			}
-
-
-			vscode.window.showInformationMessage(`command: ${macCommand}`)
 			return macCommand
 		}
 	}
@@ -138,7 +159,7 @@ export function activate(context: vscode.ExtensionContext) {
 		// execute command
 		proc.exec(cmd, { cwd: outDirectory }, (err: string, stdout: string, stderr: string) => {
 			if (err) {
-				vscode.window.showErrorMessage("Error executing the code, please make sure you have Python3 (3.6 or higher) with the relevant packages (diagrams) and Graphviz installed. You may refer to the Requirements section for more information.");
+				vscode.window.showErrorMessage(`Error executing the code, please make sure you have Python3 (3.6 or higher) with the relevant packages (diagrams) and Graphviz installed. You may refer to the Requirements section for more information.`);
 
 				return;
 			}
@@ -216,6 +237,10 @@ export function activate(context: vscode.ExtensionContext) {
 			return;
 		}
 
+		if (!vsCodePythonExtInstalledValidator()) {
+			return
+		}
+
 		vscode.window.showInformationMessage('Generating diagram preview...');
 
 		const panel = vscode.window.createWebviewPanel(
@@ -257,6 +282,14 @@ export function activate(context: vscode.ExtensionContext) {
 		})
 
 		vscode.workspace.onDidSaveTextDocument((e) => {
+			if (!isValidFileExtension()) {
+				return
+			}
+
+			if (!vsCodePythonExtInstalledValidator()) {
+				return
+			}
+
 			if (isPanelOpen) {
 				vscode.window.showInformationMessage('Reflecting new changes to diagram preview...');
 
