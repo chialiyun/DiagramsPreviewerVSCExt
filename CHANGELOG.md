@@ -30,3 +30,7 @@ All notable changes to the "diagramasacodepreview" extension will be documented 
 - Support using [VS Code's python extension's interpreter](https://code.visualstudio.com/docs/python/environments#_manually-specify-an-interpreter) via introducting new option 
 (`VS Code Python Interpreter`) to python command configuration
 - Updated README.md - on the settings configurations available
+
+## [1.0.7]
+- Support multi-line declaration of `with Diagram` and it's arguments
+- Fixed issue regarding Mac's Preview application opening causing extension to be unusable, on save for C4 diagram example
