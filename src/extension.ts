@@ -175,6 +175,7 @@ export function activate(context: vscode.ExtensionContext) {
 		const editor = vscode.window.activeTextEditor;
 
 		let line = 0, wordLine, textRange, wholeText, finalSrc = '';
+		const withDiagramRegex = new RegExp(/^with Diagram\([\w\s:"'=.,\\\/]+\)\:/g)
 		const lineCount = editor?.document.lineCount;
 
 		// find the with Diagram line
@@ -189,6 +190,15 @@ export function activate(context: vscode.ExtensionContext) {
 				finalSrc = `${finalSrc}${wholeText}\n`;
 		} while (!wholeText?.includes("with Diagram"));
 
+		// fetch the entire "with Diagram" statement
+		while (!withDiagramRegex.test(wholeText)) {
+			wordLine = editor?.document.lineAt(line)
+			textRange = new vscode.Range(wordLine?.range?.start!, wordLine?.range?.end!);
+			wholeText += editor?.document.getText(textRange)
+
+			line++;
+		} ;
+
 		// Get `withDiagram args`
 		const opening = wholeText.indexOf('(');
 		const closing = wholeText.indexOf(')');
@@ -197,10 +207,10 @@ export function activate(context: vscode.ExtensionContext) {
 		// Form `withDiagram` line
 		let withDiagram = 'with Diagram(';
 		args.forEach(x => {
-			if (!x.toLowerCase().includes('filename'))
+			if (!x.toLowerCase().includes('filename') && !x.toLowerCase().includes('show='))
 				withDiagram = `${withDiagram}${x},`
 		});
-		withDiagram = `${withDiagram}filename="${fileName}",`
+		withDiagram = `${withDiagram}filename="${fileName}",show=False`
 
 		withDiagram = `${withDiagram}):\n`
 
