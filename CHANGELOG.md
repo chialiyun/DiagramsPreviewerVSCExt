@@ -34,3 +34,6 @@ All notable changes to the "diagramasacodepreview" extension will be documented 
 ## [1.0.7]
 - Support multi-line declaration of `with Diagram` and it's arguments
 - Fixed issue regarding Mac's Preview application opening causing extension to be unusable, on save for C4 diagram example
+
+## [1.0.8]
+- devDependency (@vscode/test-electron) upgrade to v2.3.4
