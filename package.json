@@ -2,7 +2,7 @@
   "name": "diagramspreviewer",
   "displayName": "Diagrams Previewer",
   "description": "Translate the code into diagrams",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "publisher": "tehpeng",
   "author": {
     "name": "Chia Li Yun"
@@ -67,6 +67,6 @@
     "glob": "^7.1.7",
     "mocha": "^9.1.3",
     "typescript": "^4.4.4",
-    "@vscode/test-electron": "^1.6.2"
+    "@vscode/test-electron": "2.3.4"
   }
 }
