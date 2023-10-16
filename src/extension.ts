@@ -175,7 +175,7 @@ export function activate(context: vscode.ExtensionContext) {
 		const editor = vscode.window.activeTextEditor;
 
 		let line = 0, wordLine, textRange, wholeText, finalSrc = '';
-		const withDiagramRegex = new RegExp(/^with Diagram\([\w\s:"'=.,\\\/]+\)\:/g)
+		const withDiagramRegex = new RegExp(/^with Diagram\(.*?\)\:/g)
 		const lineCount = editor?.document.lineCount;
 
 		// find the with Diagram line

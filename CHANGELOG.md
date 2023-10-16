@@ -37,3 +37,6 @@ All notable changes to the "diagramasacodepreview" extension will be documented 
 
 ## [1.0.8]
 - devDependency (@vscode/test-electron) upgrade to v2.3.4
+
+## [1.0.9]
+- Fix `with Diagram` regex to allow any arguments to prevent missing any scenarios
